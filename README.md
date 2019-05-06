@@ -10,3 +10,4 @@ This is a program that can be used as a contact manager for an individual or an 
 4. Import the database onto your server.
 5. Go to a browser and open the index.html file.
 
+![example in browser ](https://github.com/lizwkariuki58/contacts_manager/blob/develop/example.png) 

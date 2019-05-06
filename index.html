@@ -51,10 +51,51 @@
             //attach a filter to filter the large number of contacts
             contactsGrid.attachHeader("#text_filter,#text_filter,#text_filter");
 
+            //create form in second column of layout
+            contactsForm = layout.cells("b").attachForm();
+            contactsForm.loadStruct("data/form.xml")
+            contactsForm.bind(contactsGrid);
 
+            //initiates a data processor,associates it with the contacts grid and attach the button click event to the contact form to save data to the grid
+            var dpg = new dataProcessor("data/contacts.php");
+            dpg.init(contactsGrid);
 
+            dpg.attachEvent("onAfterUpdate", function(sid, action, tid, tag) {
+                if (action == "inserted") {
+                    contactsGrid.selectRowById(tid);
+                    contactsForm.setFocusOnFirstActive();
+                }
+            })
+            contactsForm.attachEvent("onButtonClick", function(name) {
+                contactsForm.save()
+            });
 
+            //attach a funtion to the "onclick" event on the Add button. 
+            toolbar.attachEvent("onclick", function(id) {
+                if (id == "newContact") { //name of button on toolbar
+                    var rowId = contactsGrid.uid(); //generate unique id
+                    var pos = contactsGrid.getRowsNum();
+                    contactsGrid.addRow(rowId, ["New contact", "", ""], pos); //add new row, parameters: row id, values of cells and the position index 
+                    contactsGrid.selectRowById(rowId);
+                    contactsForm.setFocusOnFirstActive();
+                };
 
+                if (id == "delContact") {
+                    var rowId = contactsGrid.getSelectedRowId();
+                    var rowIndex = contactsGrid.getRowIndex(rowId);
+                    if (rowId != null) {
+                        contactsGrid.deleteRow(rowId);
+                        if (rowIndex != (contactsGrid.getRowsNum() - 1)) {
+                            contactsGrid.selectRow(rowIndex + 1, true);
+                        } else {
+                            contactsGrid.selectRow(rowIndex - 1, true)
+
+                        }
+                    }
+
+                }
+
+            });
 
         });
     </script>
